@@ -35,8 +35,8 @@ export default function Home() {
 
       <footer className="border-t border-black/10 bg-white dark:border-white/10 dark:bg-black">
         <div className="mx-auto w-full max-w-5xl px-4 py-6 text-xs text-zinc-500 sm:px-6">
-          지갑 연결 후 `transfer`, `approve`, `allowance`, `mint` 등을 테스트할
-          수 있습니다.
+          지갑 연결 후 `transfer`, `approve`, `allowance`, `mint`,
+          `multiTransfer` 기능을 테스트할 수 있습니다.
         </div>
       </footer>
     </div>

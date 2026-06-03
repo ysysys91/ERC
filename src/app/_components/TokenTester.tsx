@@ -188,6 +188,11 @@ export default function TokenTester() {
   const [transferTo, setTransferTo] = useState('')
   const [transferAmount, setTransferAmount] = useState('')
 
+  const [multiRecipient1, setMultiRecipient1] = useState('')
+  const [multiAmount1, setMultiAmount1] = useState('')
+  const [multiRecipient2, setMultiRecipient2] = useState('')
+  const [multiAmount2, setMultiAmount2] = useState('')
+
   const [transferFromOwner, setTransferFromOwner] = useState('')
   const [transferFromTo, setTransferFromTo] = useState('')
   const [transferFromAmount, setTransferFromAmount] = useState('')
@@ -231,6 +236,34 @@ export default function TokenTester() {
       functionName: 'transfer',
       args: [transferTo, value],
     })
+    await afterWrite(hash)
+  }
+
+  async function handleMultiTransfer() {
+    if (!isAddress(multiRecipient1)) {
+      throw new Error('받는 주소 1이 올바르지 않습니다.')
+    }
+    if (!isAddress(multiRecipient2)) {
+      throw new Error('받는 주소 2가 올바르지 않습니다.')
+    }
+
+    const value1 = parseUnits(multiAmount1 || '0', decimalsNum)
+    const value2 = parseUnits(multiAmount2 || '0', decimalsNum)
+
+    if (value1 <= BigInt(0) || value2 <= BigInt(0)) {
+  throw new Error('전송 수량은 0보다 커야 합니다.')
+}
+
+    const hash = await writeContractAsync({
+      address: contractAddress,
+      abi: contractABI,
+      functionName: 'multiTransfer',
+      args: [
+        [multiRecipient1, multiRecipient2],
+        [value1, value2],
+      ],
+    })
+
     await afterWrite(hash)
   }
 
@@ -452,6 +485,68 @@ export default function TokenTester() {
                 {isConnected
                   ? isSepolia
                     ? ''
+                    : 'Sepolia로 전환 후 실행하세요.'
+                  : '지갑 연결 후 실행하세요.'}
+              </span>
+            </div>
+          </div>
+        </Card>
+
+        <Card title="Multi Transfer">
+          <div className="grid gap-3">
+            <p className="text-xs leading-5 text-zinc-500 dark:text-zinc-500">
+              여러 주소에게 ERC-20 토큰을 한 번의 트랜잭션으로 전송하는 추가
+              기능입니다.
+            </p>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field
+                label="받는 주소 1"
+                value={multiRecipient1}
+                onChange={setMultiRecipient1}
+                placeholder="0x..."
+              />
+              <Field
+                label="수량 1"
+                value={multiAmount1}
+                onChange={setMultiAmount1}
+                placeholder={`예) 100 (${tokenSymbol.data ?? 'TOKEN'})`}
+              />
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field
+                label="받는 주소 2"
+                value={multiRecipient2}
+                onChange={setMultiRecipient2}
+                placeholder="0x..."
+              />
+              <Field
+                label="수량 2"
+                value={multiAmount2}
+                onChange={setMultiAmount2}
+                placeholder={`예) 50 (${tokenSymbol.data ?? 'TOKEN'})`}
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={async () => {
+                  try {
+                    setActionError('')
+                    await handleMultiTransfer()
+                  } catch (e) {
+                    setActionError(e instanceof Error ? e.message : String(e))
+                  }
+                }}
+                disabled={!canWrite}
+              >
+                일괄 전송
+              </Button>
+              <span className="text-xs text-zinc-500 dark:text-zinc-500">
+                {isConnected
+                  ? isSepolia
+                    ? '두 주소에 한 번에 전송됩니다.'
                     : 'Sepolia로 전환 후 실행하세요.'
                   : '지갑 연결 후 실행하세요.'}
               </span>

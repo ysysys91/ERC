@@ -1,5 +1,5 @@
 import type { Abi } from 'viem'
-export const contractAddress = '0xC744202EbC9b2CfBc8DcF731059d417D2DDd1bc1' as const
+export const contractAddress = '0xbeBcAa679a830929F8Cb7c36c75e0C02b3EDAdFe' as const
 export const contractABI = [
 	{
 		"inputs": [
@@ -186,6 +186,24 @@ export const contractABI = [
 		],
 		"name": "Approval",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address[]",
+				"name": "recipients",
+				"type": "address[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "amounts",
+				"type": "uint256[]"
+			}
+		],
+		"name": "multiTransfer",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
